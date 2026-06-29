@@ -110,6 +110,12 @@ def nmp_open(mail):
     data = aes.decrypt(nonce, ciphertext, None)
     obj = json.loads(data.decode("utf-8"))
 
+    from_user = mail.get("from")
+    if from_user != None:
+        print("Mail from: `" + from_user + "`")
+    else:
+        print("Mail from: <Unknown> (Caution, unknown users could be anyone!)")
+
     if obj["type"] == "text":
         print("Title: " + obj["title"] + "\n" + obj["text"])
     elif obj["type"] == "file":

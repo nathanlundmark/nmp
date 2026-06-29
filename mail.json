@@ -1,0 +1,12 @@
+{
+    "to": "<USERNAME>",
+    "version": 1,
+    "type": "<send/get/keychange/init/userlookup>",
+    "server-time": <some number>,
+    "key": "<AES key encoded in RSA>",
+    "blob": {
+        "title": "<Title>",
+        "type": "text/file",
+        "text": "<Message>"
+    }
+}

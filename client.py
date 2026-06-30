@@ -133,6 +133,8 @@ elif sys.argv[3] == "fetchall":
         except:
             time.sleep(10)
 
+elif sys.argv[3] == "open":
+    nmp.open_file(sys.argv[4])
 
 elif sys.argv[3] == "cli":
     started = False
@@ -167,18 +169,27 @@ elif sys.argv[3] == "cli":
             except:
                 print("You are on pause")
 
+
+        elif prompt == "sam":
+            nmp.save_messages = not nmp.save_messages
+            print(nmp.save_messages)
+
         elif prompt == "sdm":
-            m = input("Please select a mode (s,p,d) ")
+            m = input("Please select a mode (s,p,d,o) ")
             modes = {
                 "s": "save",
                 "p": "preview",
-                "d": "ignore"
+                "d": "ignore",
+                "o": "prompt"
             }
-            if m in set("spd"):
-                nmp.change_prompt_downloads(m)
+            if m in set("spdo"):
+                nmp.prompt_downloads = m
                 print("Set to mode: " + modes[m])
             else:
                 print("Failed!")
+
+        elif prompt == "open":
+            nmp.open_file(input("File: "))
 
         elif prompt == "time":
             waittime = int(input("New time? "))

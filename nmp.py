@@ -3,10 +3,8 @@ import os, sys
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import key_sync
 
-prompt_downloads = "Prompt"
-def change_prompt_downloads(s):
-    global prompt_downloads
-    prompt_downloads = s
+save_messages = False
+prompt_downloads = "o"
 
 def get_buffer(conn):
     # Read exactly 4 bytes
@@ -123,7 +121,7 @@ def nmp_open(mail):
             obj["text"].encode("ascii")
         )
         while True:
-            if prompt_downloads == "Prompt":
+            if prompt_downloads == "o":
                 prompt = input("This email `" + obj["title"] + "` contains a file. Would you like to preview, save, or ignore (p,s,d)?")
             else:
                 prompt = prompt_downloads
@@ -146,12 +144,24 @@ def nmp_open(mail):
                 print("Saved `" + obj["title"] + "` as `" + fn + "`")
                 break
         
-            if prompt_downloads != "Prompt":
+            if prompt_downloads != "o":
                 break
     else:
         print(obj)
 
 
+def open_file(fn):
+    try:
+        with open(fn, "rb") as f:
+            buf = f.read()
+
+        obj = json.loads(buf.decode("utf-8"))
+        if obj["type"] == "empty":
+            return False
+
+        nmp_open(obj)
+    except:
+        print("Failed to open `" + fn + "`!")
 
 
 
@@ -238,6 +248,16 @@ def fetch():
     obj = json.loads(buf.decode("utf-8"))
     if obj["type"] == "empty":
         return False
+
+
+    if save_messages:
+        fn = "./save_" + str(time.time()) + ".nmpc"
+        with open(fn, "wb") as f:
+            f.write(buf)
+        user = obj.get("from")
+        if user == None:
+            user = "<Unknown>"
+        print("Saved `" + fn + "` by `" + user + "`")
 
     nmp_open(obj)
     return True
